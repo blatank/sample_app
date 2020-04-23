@@ -13,6 +13,8 @@ class UsersController < ApplicationController
   def create
     @user = User.create(user_params)
     if @user.save
+      flash[:success] = "Welcome to the Smaple App!"
+      redirect_to @user
     else
       render 'new'
     end
