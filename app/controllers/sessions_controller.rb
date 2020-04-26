@@ -11,7 +11,10 @@ class SessionsController < ApplicationController
     # パスワード確認
     if user && user.authenticate(params[:session][:password])
       # パスワードOK、ログインする
-      log_in(user)
+      log_in user
+      
+      # remember_me(チェックされていないときはforgetする)
+      params[:session][:remember_me] == '1' ? remember(user) : forget(user)
       
       # ユーザのページにリダイレクト
       redirect_to user
@@ -24,7 +27,11 @@ class SessionsController < ApplicationController
   
   # DELETE /logout
   def destroy
-    log_out
+    # ログインしているならログアウトする
+    if logged_in?
+      log_out
+    end
+
     redirect_to root_url
   end
 end
