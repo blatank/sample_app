@@ -23,7 +23,7 @@ class UsersController < ApplicationController
     @user = User.create(user_params)
     if @user.save
       # メールを作成してそのまま送信
-      UserMailer.account_activation(@user).deliver_now
+      @user.send_activation_email
       
       # メールを確認してもらう旨のflashを設定
       flash[:info] = "Please check your email to activate your account."
