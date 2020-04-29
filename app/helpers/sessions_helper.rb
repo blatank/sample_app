@@ -12,7 +12,7 @@ module SessionsHelper
       # まずはユーザを取得
       user = User.find_by(id: user_id)
       # userが存在するかどうか確認してから、ログイン復元を試みる
-      if user && user.authenticated?(cookies[:remember_token])
+      if user && user.authenticated?(:remember, cookies[:remember_token])
         # ログインする
         log_in user
         

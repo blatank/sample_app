@@ -10,14 +10,23 @@ class SessionsController < ApplicationController
     
     # パスワード確認
     if user && user.authenticate(params[:session][:password])
-      # パスワードOK、ログインする
-      log_in user
       
-      # remember_me(チェックされていないときはforgetする)
-      params[:session][:remember_me] == '1' ? remember(user) : forget(user)
-      
-      # ユーザのページにリダイレクト
-      redirect_back_or user
+      if user.activated?
+        
+        # パスワードOK、ログインする
+        log_in user
+        
+        # remember_me(チェックされていないときはforgetする)
+        params[:session][:remember_me] == '1' ? remember(user) : forget(user)
+        
+        # ユーザのページにリダイレクト
+        redirect_back_or user
+      else
+        message  = "Account not activated. "
+        message += "Check your email for the activation link."
+        flash[:warning] = message
+        redirect_to root_url
+      end
     else
       # まちがっている場合
       flash.now[:danger] = "Invalid email/password conbination"

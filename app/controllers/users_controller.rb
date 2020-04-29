@@ -22,9 +22,14 @@ class UsersController < ApplicationController
   def create
     @user = User.create(user_params)
     if @user.save
-      log_in @user
-      flash[:success] = "Welcome to the Smaple App!"
-      redirect_to @user
+      # メールを作成してそのまま送信
+      UserMailer.account_activation(@user).deliver_now
+      
+      # メールを確認してもらう旨のflashを設定
+      flash[:info] = "Please check your email to activate your account."
+      
+      # rootへ移動
+      redirect_to root_url
     else
       render 'new'
     end
