@@ -22,4 +22,21 @@ class MicropostsControllerTest < ActionDispatch::IntegrationTest
     # ログインページに飛ぶ
     assert_redirected_to login_url
   end
+  
+  test "should redirect destroy for wrong micropost" do
+    # michaelでログイン
+    log_in_as(users(:michael))
+    
+    # antsのマイクロポストを取得
+    micropost = microposts(:ants)
+    
+    # michaelでantsのマイクロポストをdelete
+    assert_no_difference 'Micropost.count' do
+      # DELETE /microposts/:id
+      delete micropost_path(micropost)
+    end
+    
+    # 失敗時はrootにリダイレクトされるはず
+    assert_redirected_to root_url
+  end
 end
