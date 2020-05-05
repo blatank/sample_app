@@ -5,24 +5,28 @@ class RelationshipsController < ApplicationController
   # POST /relationships
   def create
     # フォローするユーザを取得
-    user = User.find(params[:followed_id])
+    @user = User.find(params[:followed_id])
     
     # current_userがuserをフォロー
-    current_user.follow(user)
+    current_user.follow(@user)
     
-    # フォローしたユーザのページに戻る
-    redirect_to user
+    respond_to do |format|
+      format.html { redirect_to @user }  # フォローしたユーザのページに戻る
+      format.js
+    end
   end
   
   # DELETE /relationships/:id
   def destroy
     # アンフォローするユーザをRelationshipから取得
-    user = Relationship.find(params[:id]).followed
+    @user = Relationship.find(params[:id]).followed
     
     # current_userがuserをアンフォロー
-    current_user.unfollow(user)
+    current_user.unfollow(@user)
     
-    # アンフォローしたユーザのページに戻る
-    redirect_to user
+    respond_to do |format|
+      format.html { redirect_to @user }  # アンフォローしたユーザのページに戻る
+      format.js
+    end
   end
 end
